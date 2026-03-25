@@ -1,27 +1,22 @@
 ---
-description: rules to parse solution architecture from docs/architecture.md
+description: 从 docs/architecture.md 解析方案架构的规则
 globs: 
 alwaysApply: false
 ---
----
-description: rules to parse solution architecture from docs/architecture.md
-globs: 
-alwaysApply: false
----
-# Architecture Understanding
+# 架构理解
 READ_ARCHITECTURE: |
-  File: docs/architecture.md @architecture.md
-  Required parsing:
-  1. Load and parse complete Mermaid diagram
-  2. Extract and understand:
-     - Module boundaries and relationships
-     - Data flow patterns
-     - System interfaces
-     - Component dependencies
-  3. Validate any changes against architectural constraints
-  4. Ensure new code maintains defined separation of concerns
+  文件: docs/architecture.md @architecture.md
+  必需解析:
+  1. 加载并解析完整 Mermaid 图
+  2. 提取并理解:
+     - 模块边界与关系
+     - 数据流模式
+     - 系统接口
+     - 组件依赖
+  3. 对照架构约束验证任何变更
+  4. 确保新代码维持既定的关注点分离
   
-  Error handling:
-  1. If file not found: STOP and notify user
-  2. If diagram parse fails: REQUEST clarification
-  3. If architectural violation detected: WARN user
+  错误处理:
+  1. 若文件不存在: STOP 并通知用户
+  2. 若图表解析失败: REQUEST 澄清
+  3. 若检测到架构违规: WARN 用户

@@ -1,19 +1,15 @@
 ---
-description: Cursor Rules Location
-globs: 
+description: Cursor 规则文件存放位置
+globs: *.mdc
 alwaysApply: false
 ---
----
-description: Cursor Rules Location
-globs: *.mdc
----
-# Cursor Rules Location
+# Cursor 规则文件存放位置
 
-Rules for placing and organizing Cursor rule files in the repository.
+在仓库中放置与组织 Cursor 规则文件的规范。
 
 <rule>
 name: cursor_rules_location
-description: Standards for placing Cursor rule files in the correct directory
+description: 将 Cursor 规则文件放在正确目录的标准
 filters:
   # Match any .mdc files
   - type: file_extension
@@ -29,13 +25,13 @@ actions:
   - type: reject
     conditions:
       - pattern: "^(?!\\.\\/\\.cursor\\/rules\\/.*\\.mdc$)"
-        message: "Cursor rule files (.mdc) must be placed in the .cursor/rules directory"
+        message: "Cursor 规则文件 (.mdc) 必须放在 .cursor/rules 目录下"
 
   - type: suggest
     message: |
-      When creating Cursor rules:
+      创建 Cursor 规则时:
 
-      1. Always place rule files in PROJECT_ROOT/.cursor/rules/:
+      1. 始终将规则文件放在 PROJECT_ROOT/.cursor/rules/:
          ```
          .cursor/rules/
          ├── your-rule-name.mdc
@@ -43,12 +39,12 @@ actions:
          └── ...
          ```
 
-      2. Follow the naming convention:
-         - Use kebab-case for filenames
-         - Always use .mdc extension
-         - Make names descriptive of the rule's purpose
+      2. 遵循命名约定:
+         - 文件名使用 kebab-case
+         - 始终使用 .mdc 扩展名
+         - 名称应能描述规则用途
 
-      3. Directory structure:
+      3. 目录结构:
          ```
          PROJECT_ROOT/
          ├── .cursor/
@@ -58,10 +54,10 @@ actions:
          └── ...
          ```
 
-      4. Never place rule files:
-         - In the project root
-         - In subdirectories outside .cursor/rules
-         - In any other location
+      4. 切勿将规则文件放在:
+         - 项目根目录
+         - .cursor/rules 以外的子目录
+         - 任何其他位置
 
 examples:
   - input: |
@@ -72,7 +68,7 @@ examples:
 
       # Good: Rule file in correct location
       .cursor/rules/my-rule.mdc
-    output: "Correctly placed Cursor rule file"
+    output: "Cursor 规则文件位置正确"
 
 metadata:
   priority: high

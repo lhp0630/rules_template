@@ -1,317 +1,313 @@
 ---
-description: 
-globs: 
+description: LangGraph 开发最佳实践 (代码组织、性能、安全、测试)
+globs: **/*.py
 alwaysApply: false
 ---
----
-description: This rule file provides comprehensive best practices for developing with LangGraph, covering code organization, performance, security, testing, and common pitfalls. It offers actionable guidance for developers to build robust and maintainable LangGraph applications.
-globs: **/*.py
----
-# LangGraph Best Practices and Coding Standards
+# LangGraph 最佳实践与编码规范
 
-This document outlines best practices and coding standards for developing with LangGraph. It aims to provide clear, actionable guidance for developers to build robust, maintainable, and scalable LangGraph applications. It covers various aspects, including code organization, common patterns, performance considerations, security, testing, and common pitfalls.
+本文概述 LangGraph 开发的最佳实践与编码规范, 为构建稳健、可维护、可扩展的 LangGraph 应用提供清晰、可执行的指引, 涵盖代码组织、常见模式、性能、安全、测试与常见陷阱。
 
-## Library Information:
+## 库信息:
 
 - Name: langgraph
 - Tags: ai, ml, llm, python, agent-framework, workflow
 
-## 1. Code Organization and Structure
+## 1. 代码组织与结构
 
-### 1.1. Directory Structure Best Practices
+### 1.1. 目录结构最佳实践
 
 
 my_langgraph_project/
-├── data/                      # Datasets, knowledge bases, or other data files.
-├── src/                       # Source code.
-│   ├── components/             # Reusable components (e.g., custom nodes, tools).
+├── data/                        # 数据集、知识库或其他数据文件
+├── src/                         # 源代码
+│   ├── components/              # 可复用组件 (如自定义 node、tool)
 │   │   ├── __init__.py
-│   │   ├── retrieval.py        # Retrieval-related nodes
-│   │   ├── tool_selector.py    # Logic for selecting which tool to use
+│   │   ├── retrieval.py         # 检索相关 node
+│   │   ├── tool_selector.py     # tool 选择逻辑
 │   │   └── ...
-│   ├── graphs/                 # Graph definitions.
+│   ├── graphs/                  # 图定义
 │   │   ├── __init__.py
-│   │   ├── customer_support.py  # Example: Customer support graph.
-│   │   ├── rag_pipeline.py     # Example: RAG pipeline graph.
+│   │   ├── customer_support.py  # 示例: 客服图
+│   │   ├── rag_pipeline.py      # 示例: RAG 流水线图
 │   │   └── ...
-│   ├── utils/                  # Utility functions and helpers.
+│   ├── utils/                   # 工具函数与 helper
 │   │   ├── __init__.py
-│   │   ├── config.py           # Configuration loading
-│   │   ├── logging.py          # Logging setup
+│   │   ├── config.py            # 配置加载
+│   │   ├── logging.py           # 日志配置
 │   │   └── ...
-│   ├── schemas/                # Data schemas and type definitions.
+│   ├── schemas/                 # 数据 schema 与类型定义
 │   │   ├── __init__.py
-│   │   ├── agent_state.py      # Definition of agent state
+│   │   ├── agent_state.py       # agent state 定义
 │   │   └── ...
-│   ├── main.py                 # Entry point of the application.
+│   ├── main.py                  # 应用入口
 │   └── ...
-├── tests/                     # Unit and integration tests.
+├── tests/                       # 单元测试与集成测试
 │   ├── __init__.py
-│   ├── components/             # Tests for custom components.
-│   ├── graphs/                 # Tests for graph definitions.
-│   ├── utils/                  # Tests for utility functions.
+│   ├── components/              # 自定义组件测试
+│   ├── graphs/                  # 图定义测试
+│   ├── utils/                   # 工具函数测试
 │   └── ...
-├── .env                       # Environment variables.
-├── requirements.txt           # Project dependencies.
-├── pyproject.toml            # Project metadata and build settings
-└── README.md                  # Project documentation.
+├── .env                         # 环境变量
+├── requirements.txt             # 项目依赖
+├── pyproject.toml               # 项目元数据与构建配置
+└── README.md                    # 项目文档
 
 
-### 1.2. File Naming Conventions
+### 1.2. 文件命名约定
 
--   Python files: `snake_case.py` (e.g., `customer_support.py`, `retrieval_node.py`).
--   Class names: `PascalCase` (e.g., `CustomerSupportGraph`, `RetrievalNode`).
--   Variables and functions: `snake_case` (e.g., `user_query`, `process_message`).
--   Configuration files: `config.yaml` or `config.json`
+-   Python 文件: `snake_case.py` (如 `customer_support.py`, `retrieval_node.py`)
+-   类名: `PascalCase` (如 `CustomerSupportGraph`, `RetrievalNode`)
+-   变量与函数: `snake_case` (如 `user_query`, `process_message`)
+-   配置文件: `config.yaml` 或 `config.json`
 
-### 1.3. Module Organization Best Practices
+### 1.3. 模块组织最佳实践
 
--   Group related functionalities into modules (e.g., `components`, `graphs`, `utils`).
--   Use `__init__.py` files to make directories packages.
--   Keep modules focused and avoid overly large files.
--   Use relative imports within modules to avoid naming conflicts.
+-   将相关功能归入模块 (如 `components`, `graphs`, `utils`)
+-   使用 `__init__.py` 将目录变为 package
+-   保持模块聚焦, 避免单文件过大
+-   模块内使用相对 import, 避免命名冲突
 
-### 1.4. Component Architecture Recommendations
+### 1.4. 组件架构建议
 
--   Design reusable components for common tasks (e.g., data retrieval, text summarization, tool selection).
--   Create abstract base classes or interfaces for components to promote code reuse and modularity.
--   Use dependency injection to configure components and their dependencies.
--   Adhere to the Single Responsibility Principle (SRP) when designing components.
+-   为常见任务设计可复用组件 (如数据检索、文本摘要、tool 选择)
+-   为组件创建抽象基类或接口, 促进复用与模块化
+-   使用依赖注入配置组件及其依赖
+-   设计组件时遵循单一职责原则 (SRP)
 
-### 1.5. Code Splitting Strategies
+### 1.5. 代码拆分策略
 
--   Split large graph definitions into smaller, more manageable files.
--   Use lazy loading for components that are not immediately needed.
--   Consider using a module bundler (e.g., esbuild via a plugin) to optimize bundle size for deployment.
--   Break the system down into microservices if warranted by scale and complexity of the overall system. Communicate between microservices using REST or message queues.
+-   将大型图定义拆分为更小、更易管理的文件
+-   对非立即需要的组件使用 lazy loading
+-   部署时可用 module bundler (如通过插件的 esbuild) 优化 bundle 体积
+-   若整体系统规模与复杂度需要, 可拆为微服务, 通过 REST 或消息队列通信
 
-## 2. Common Patterns and Anti-patterns
+## 2. 常见模式与反模式
 
-### 2.1. Design Patterns
+### 2.1. 设计模式
 
--   **State Management Pattern**: Encapsulate the agent state in a dedicated class or data structure to ensure consistency and maintainability. Use LangGraph's `StateGraph` to clearly define the state transitions.
--   **Node Pattern**: Define reusable nodes for common tasks such as information retrieval, tool selection, and response generation.
--   **Conditional Edge Pattern**: Use conditional edges to implement branching logic based on the agent state or external factors. This makes the graph more dynamic and responsive.
--   **Retry Pattern:** Implement retry logic within nodes or edges to handle transient errors or API rate limits.  Use exponential backoff to avoid overwhelming failing services.
--   **Orchestration Pattern**: Use LangGraph as the orchestrator for complex agentic workflows, delegating specific tasks to specialized components or services.
+-   **State Management Pattern**: 用专用 class 或数据结构封装 agent state, 保证一致性与可维护性; 用 LangGraph 的 `StateGraph` 清晰定义状态转移
+-   **Node Pattern**: 为信息检索、tool 选择、响应生成等常见任务定义可复用 node
+-   **Conditional Edge Pattern**: 用 conditional edge 基于 agent state 或外部因素实现分支逻辑, 使图更动态、响应更快
+-   **Retry Pattern:** 在 node 或 edge 内实现重试, 处理瞬时错误或 API rate limit; 使用指数退避, 避免压垮故障服务
+-   **Orchestration Pattern**: 用 LangGraph 编排复杂 agent 工作流, 将具体任务委托给专用组件或服务
 
-### 2.2. Recommended Approaches for Common Tasks
+### 2.2. 常见任务推荐做法
 
--   **Information Retrieval**: Use LangChain's retrieval chain or custom nodes to fetch relevant information from external sources.
--   **Tool Selection**: Implement a tool selection node that dynamically chooses the appropriate tool based on the user query and agent state.
--   **Response Generation**: Use LangChain's LLMChain or custom nodes to generate responses based on the retrieved information and agent state.
--   **Error Handling:** Implement robust error handling within nodes and edges to gracefully handle exceptions and prevent application crashes. Log all errors and implement monitoring to quickly detect and resolve issues.
+-   **Information Retrieval**: 用 LangChain retrieval chain 或自定义 node 从外部源获取相关信息
+-   **Tool Selection**: 实现 tool 选择 node, 根据用户 query 与 agent state 动态选择合适 tool
+-   **Response Generation**: 用 LangChain LLMChain 或自定义 node, 基于检索信息与 agent state 生成响应
+-   **Error Handling:** 在 node 与 edge 内实现稳健错误处理, 优雅处理异常并避免崩溃; 记录所有错误并做监控, 便于快速发现与修复
 
-### 2.3. Anti-patterns and Code Smells
+### 2.3. 反模式与代码坏味道
 
--   **Monolithic Graphs**: Avoid creating overly complex graphs with too many nodes and edges. Break them down into smaller, more manageable subgraphs.
--   **Hardcoded Values**: Avoid hardcoding values directly into the graph definition. Use configuration files or environment variables to manage configurable parameters.
--   **Ignoring Errors**: Always handle exceptions and log errors appropriately. Ignoring errors can lead to unexpected behavior and difficult-to-debug issues.
--   **Over-Reliance on Global State**: Minimize the use of global state to avoid unintended side effects and make the application more testable.
--   **Lack of Testing**: Thoroughly test all components and graph definitions to ensure they function correctly and handle edge cases.
--   **Infinite Loops:** Ensure the conditional edges within the graph are well-defined to avoid infinite loops.
+-   **Monolithic Graphs**: 避免 node/edge 过多、过于复杂的图; 拆成更小、可管理的 subgraph
+-   **Hardcoded Values**: 避免在图定义中硬编码; 用配置文件或环境变量管理可配置参数
+-   **Ignoring Errors**: 始终处理异常并适当记录; 忽略错误会导致不可预期行为与难调试问题
+-   **Over-Reliance on Global State**: 尽量减少全局 state, 避免副作用并提升可测试性
+-   **Lack of Testing**: 充分测试所有组件与图定义, 确保功能正确并覆盖边界情况
+-   **Infinite Loops:** 确保 conditional edge 定义清晰, 避免无限循环
 
-### 2.4. State Management Best Practices
+### 2.4. State 管理最佳实践
 
--   Define a clear and concise agent state schema.
--   Use immutable data structures for the agent state to avoid accidental modifications.
--   Persist the agent state to a database or other storage medium to support long-running conversations or task executions.  Consider using vector databases for efficient retrieval.
--   Implement versioning for the agent state schema to support schema migrations.
--   Use LangGraph's checkpointing feature to save and restore the agent state.
+-   定义清晰、简洁的 agent state schema
+-   对 agent state 使用不可变数据结构, 避免意外修改
+-   将 agent state 持久化到数据库或其他存储, 支持长对话或长任务; 可考虑 vector database 以高效检索
+-   为 agent state schema 做版本管理, 支持 schema 迁移
+-   使用 LangGraph checkpointing 保存与恢复 agent state
 
-### 2.5. Error Handling Patterns
+### 2.5. 错误处理模式
 
--   Use try-except blocks to catch exceptions within nodes and edges.
--   Log all errors and warnings with relevant context information.
--   Implement retry logic for transient errors or API rate limits.
--   Use fallback mechanisms to gracefully handle unrecoverable errors.
--   Centralize error handling logic in a dedicated module or class.
--   Implement circuit breaker pattern to prevent cascading failures.
+-   在 node 与 edge 内用 try-except 捕获异常
+-   记录所有 error/warning 及相应上下文
+-   对瞬时错误或 API rate limit 实现重试
+-   用 fallback 机制优雅处理不可恢复错误
+-   将错误处理逻辑集中到专用模块或 class
+-   实现 circuit breaker, 防止级联故障
 
-## 3. Performance Considerations
+## 3. 性能考量
 
-### 3.1. Optimization Techniques
+### 3.1. 优化技巧
 
--   **Caching**: Implement caching for frequently accessed data or LLM responses.
--   **Batching**: Batch multiple requests to external APIs to reduce latency.
--   **Asynchronous Operations**: Use asynchronous operations to perform non-blocking I/O and improve responsiveness.
--   **Parallel Processing**: Use multi-threading or multi-processing to parallelize computationally intensive tasks.
--   **Graph Optimization**: Optimize the graph structure to minimize the number of nodes and edges.
--   **Prompt Optimization**: Carefully design prompts to reduce the number of tokens and improve LLM performance.
--   **Reduce LLM calls**: Cache LLM responses when possible. Fine-tune smaller models for specific tasks to reduce latency and cost.
+-   **Caching**: 对频繁访问的数据或 LLM 响应做缓存
+-   **Batching**: 批量请求外部 API 以降低延迟
+-   **Asynchronous Operations**: 用异步 I/O 做非阻塞操作, 提升响应性
+-   **Parallel Processing**: 用多线程或多进程并行计算密集型任务
+-   **Graph Optimization**: 优化图结构, 减少 node 与 edge 数量
+-   **Prompt Optimization**: 精心设计 prompt, 减少 token 并提升 LLM 表现
+-   **Reduce LLM calls**: 尽可能缓存 LLM 响应; 针对特定任务微调小模型以降低延迟与成本
 
-### 3.2. Memory Management Considerations
+### 3.2. 内存管理考量
 
--   Monitor memory usage to detect memory leaks or excessive memory consumption.
--   Use garbage collection to reclaim unused memory.
--   Avoid storing large objects in the agent state.
--   Use streaming or lazy loading for large data sets.
+-   监控内存使用, 发现泄漏或过度占用
+-   使用垃圾回收释放未用内存
+-   避免在 agent state 中存放大对象
+-   对大数据集使用 streaming 或 lazy loading
 
-### 3.3. (Not applicable, as LangGraph doesn't directly handle rendering)
+### 3.3. (不适用, LangGraph 不直接处理渲染)
 
-### 3.4. Bundle Size Optimization
+### 3.4. Bundle 体积优化
 
--   Use a module bundler (e.g., esbuild) to optimize bundle size.
--   Remove unused code and dependencies.
--   Use code splitting to load only the necessary code for each route or component.
--   Compress the bundle using gzip or Brotli.
+-   用 module bundler (如 esbuild) 优化 bundle 体积
+-   移除未用代码与依赖
+-   用 code splitting 按 route/组件只加载必要代码
+-   用 gzip 或 Brotli 压缩 bundle
 
-### 3.5. Lazy Loading Strategies
+### 3.5. Lazy Loading 策略
 
--   Use lazy loading for components that are not immediately needed.
--   Load large data sets or models on demand.
--   Implement code splitting to load only the necessary code for each graph or component.
+-   对非立即需要的组件使用 lazy loading
+-   按需加载大数据集或模型
+-   用 code splitting 按图或组件只加载必要代码
 
-## 4. Security Best Practices
+## 4. 安全最佳实践
 
-### 4.1. Common Vulnerabilities and Prevention
+### 4.1. 常见漏洞与防护
 
--   **Prompt Injection**: Prevent prompt injection by carefully validating user inputs and sanitizing prompts.
--   **Data Leaks**: Protect sensitive data by encrypting it at rest and in transit.
--   **Unauthorized Access**: Implement strong authentication and authorization mechanisms to control access to the application and its data.
--   **Denial of Service (DoS)**: Implement rate limiting and request filtering to prevent DoS attacks.
--   **Code Injection**: Avoid executing arbitrary code based on user inputs to prevent code injection vulnerabilities.
--   **API Key Exposure**: Store API keys securely using environment variables or a secrets management system and avoid committing them to version control.
+-   **Prompt Injection**: 严格校验用户输入并 sanitize prompt, 防止 prompt 注入
+-   **Data Leaks**: 静态与传输中加密敏感数据
+-   **Unauthorized Access**: 实现强认证与授权, 控制对应用与数据的访问
+-   **Denial of Service (DoS)**: 实现 rate limiting 与请求过滤, 防止 DoS
+-   **Code Injection**: 避免基于用户输入执行任意代码
+-   **API Key Exposure**: 用环境变量或 secrets 管理系统安全存储 API key, 勿提交到版本控制
 
-### 4.2. Input Validation
+### 4.2. 输入校验
 
--   Validate all user inputs to prevent prompt injection and other vulnerabilities.
--   Use regular expressions or other validation techniques to ensure that inputs conform to the expected format.
--   Sanitize inputs to remove potentially harmful characters or code.
--   Enforce input length limits to prevent buffer overflows.
+-   校验所有用户输入, 防止 prompt 注入等漏洞
+-   用正则或其他方式确保输入符合预期格式
+-   Sanitize 输入, 移除有害字符或代码
+-   限制输入长度, 防止 buffer overflow
 
-### 4.3. Authentication and Authorization
+### 4.3. 认证与授权
 
--   Use strong authentication mechanisms (e.g., multi-factor authentication) to verify user identities.
--   Implement role-based access control (RBAC) to restrict access to sensitive data and functionality.
--   Use secure session management to protect user sessions from hijacking.
--   Store passwords securely using hashing and salting.
+-   使用强认证 (如 MFA) 验证用户身份
+-   实现 RBAC, 限制对敏感数据与功能的访问
+-   安全 session 管理, 防止 session 劫持
+-   用 hashing 与 salting 安全存储密码
 
-### 4.4. Data Protection
+### 4.4. 数据保护
 
--   Encrypt sensitive data at rest and in transit.
--   Use secure protocols (e.g., HTTPS) for all API communication.
--   Implement data masking to protect sensitive data from unauthorized access.
--   Regularly back up data to prevent data loss.
--   Comply with relevant data privacy regulations (e.g., GDPR, CCPA).
+-   静态与传输中加密敏感数据
+-   所有 API 通信使用 HTTPS 等安全协议
+-   数据脱敏, 防止未授权访问
+-   定期备份, 防止数据丢失
+-   遵守 GDPR、CCPA 等隐私法规
 
-### 4.5. Secure API Communication
+### 4.5. 安全 API 通信
 
--   Use HTTPS for all API communication.
--   Implement API authentication and authorization.
--   Validate API requests and responses.
--   Use rate limiting to prevent API abuse.
--   Monitor API traffic for suspicious activity.
+-   所有 API 通信使用 HTTPS
+-   实现 API 认证与授权
+-   校验 API 请求与响应
+-   用 rate limiting 防止 API 滥用
+-   监控 API 流量, 发现可疑活动
 
-## 5. Testing Approaches
+## 5. 测试方法
 
-### 5.1. Unit Testing
+### 5.1. 单元测试
 
--   Write unit tests for all components and utility functions.
--   Use mocking and stubbing to isolate components during testing.
--   Test edge cases and error conditions.
--   Aim for high test coverage.
+-   为所有组件与工具函数编写单元测试
+-   用 mocking/stubbing 隔离被测组件
+-   测试边界情况与错误条件
+-   追求高测试覆盖率
 
-### 5.2. Integration Testing
+### 5.2. 集成测试
 
--   Write integration tests to verify the interactions between different components.
--   Test the integration with external APIs and services.
--   Use a test environment that closely resembles the production environment.
+-   编写集成测试验证组件间交互
+-   测试与外部 API、服务的集成
+-   使用接近生产环境的测试环境
 
-### 5.3. End-to-End Testing
+### 5.3. 端到端测试
 
--   Write end-to-end tests to verify the entire application flow.
--   Use a testing framework such as Playwright or Selenium to automate end-to-end tests.
--   Test the application from the user's perspective.
+-   编写 E2E 测试验证完整应用流
+-   用 Playwright、Selenium 等框架自动化 E2E
+-   从用户视角测试应用
 
-### 5.4. Test Organization
+### 5.4. 测试组织
 
--   Organize tests into separate directories for unit tests, integration tests, and end-to-end tests.
--   Use descriptive names for test files and test functions.
--   Follow a consistent naming convention for test files and test functions.
--   Use test suites to group related tests.
+-   单元/集成/E2E 测试分目录存放
+-   测试文件与函数使用描述性命名
+-   遵循一致的测试命名约定
+-   用 test suite 分组相关测试
 
-### 5.5. Mocking and Stubbing
+### 5.5. Mocking 与 Stubbing
 
--   Use mocking to replace external dependencies with mock objects.
--   Use stubbing to replace complex components with simplified versions.
--   Use a mocking framework such as pytest-mock to simplify mocking and stubbing.
+-   用 mock 替换外部依赖
+-   用 stub 替换复杂组件为简化版本
+-   用 pytest-mock 等框架简化 mock/stub
 
-## 6. Common Pitfalls and Gotchas
+## 6. 常见陷阱与注意事项
 
-### 6.1. Frequent Mistakes
+### 6.1. 常见错误
 
--   **Incorrect State Management**: Failing to properly manage the agent state can lead to inconsistent behavior and incorrect results.
--   **Ignoring Edge Cases**: Neglecting to handle edge cases can cause unexpected errors and application crashes.
--   **Over-Engineering**: Over-complicating the graph definition can make it difficult to understand and maintain.
--   **Insufficient Testing**: Lack of thorough testing can lead to undetected bugs and application failures.
--   **Not Handling Asynchronous Operations Correctly:** LangGraph, and LLMs generally, use async operations, and failing to await these operations will cause unpredictable results.
+-   **Incorrect State Management**: agent state 管理不当会导致行为不一致与错误结果
+-   **Ignoring Edge Cases**: 未处理边界情况会导致意外错误与崩溃
+-   **Over-Engineering**: 图定义过度复杂, 难以理解与维护
+-   **Insufficient Testing**: 测试不足会导致未发现的 bug 与故障
+-   **Not Handling Asynchronous Operations Correctly:** LangGraph 与 LLM 普遍使用 async; 未 await 会导致不可预期结果
 
-### 6.2. Edge Cases
+### 6.2. 边界情况
 
--   **Empty User Inputs**: Handle cases where the user provides empty or invalid inputs.
--   **API Rate Limits**: Implement retry logic and rate limiting to handle API rate limits.
--   **Unexpected API Responses**: Handle cases where external APIs return unexpected responses.
--   **Large Data Sets**: Use streaming or lazy loading to handle large data sets.
+-   **Empty User Inputs**: 处理空或无效用户输入
+-   **API Rate Limits**: 实现重试与 rate limiting
+-   **Unexpected API Responses**: 处理外部 API 异常响应
+-   **Large Data Sets**: 用 streaming 或 lazy loading 处理大数据集
 
-### 6.3. Version-Specific Issues
+### 6.3. 版本相关问题
 
--   Be aware of compatibility issues between different versions of LangGraph and LangChain.
--   Consult the documentation and release notes for any version-specific issues.
--   Pin dependencies to specific versions to avoid unexpected behavior.
+-   注意 LangGraph 与 LangChain 不同版本间的兼容性
+-   查阅文档与 release notes 中的版本说明
+-   固定依赖版本, 避免不可预期行为
 
-### 6.4. Compatibility Concerns
+### 6.4. 兼容性考量
 
--   Ensure compatibility between LangGraph and other technologies used in the application.
--   Test the integration with external APIs and services.
--   Use a consistent set of libraries and dependencies.
+-   确保 LangGraph 与应用中其他技术兼容
+-   测试与外部 API、服务的集成
+-   使用一致的库与依赖集合
 
-### 6.5. Debugging Strategies
+### 6.5. 调试策略
 
--   Use logging to track the execution flow and identify errors.
--   Use a debugger to step through the code and inspect variables.
--   Use a testing framework to write unit tests and integration tests.
--   Use monitoring tools to track performance and identify bottlenecks.
--   Visualize the graph structure to understand the flow of execution.
+-   用 logging 跟踪执行流并定位错误
+-   用 debugger 单步调试并检查变量
+-   用测试框架编写单元/集成测试
+-   用监控工具跟踪性能与瓶颈
+-   可视化图结构, 理解执行流
 
-## 7. Tooling and Environment
+## 7. 工具与环境
 
-### 7.1. Recommended Tools
+### 7.1. 推荐工具
 
--   **IDE**: PyCharm, Visual Studio Code with Python extension.
--   **Virtual Environment Manager**: venv, conda.
--   **Testing Framework**: pytest.
--   **Mocking Framework**: pytest-mock.
--   **Linting and Formatting**: pylint, black.
--   **Module Bundler**: esbuild via a plugin.
--   **CI/CD**: GitHub Actions, GitLab CI.
--   **Secrets Management**: HashiCorp Vault, AWS Secrets Manager, Azure Key Vault.
--   **Monitoring**: LangSmith, Prometheus, Grafana.
+-   **IDE**: PyCharm, 带 Python 扩展的 VS Code
+-   **Virtual Environment Manager**: venv, conda
+-   **Testing Framework**: pytest
+-   **Mocking Framework**: pytest-mock
+-   **Linting and Formatting**: pylint, black
+-   **Module Bundler**: 通过插件的 esbuild
+-   **CI/CD**: GitHub Actions, GitLab CI
+-   **Secrets Management**: HashiCorp Vault, AWS Secrets Manager, Azure Key Vault
+-   **Monitoring**: LangSmith, Prometheus, Grafana
 
-### 7.2. Build Configuration
+### 7.2. 构建配置
 
--   Use a build system such as `poetry` or `pip` to manage dependencies.
--   Use a configuration file such as `pyproject.toml` or `setup.py` to define project metadata and build settings.
+-   用 `poetry` 或 `pip` 管理依赖
+-   用 `pyproject.toml` 或 `setup.py` 定义项目元数据与构建配置
 
-### 7.3. Linting and Formatting
+### 7.3. Lint 与格式化
 
--   Use a linter such as `pylint` or `flake8` to enforce code style and identify potential errors.
--   Use a code formatter such as `black` or `autopep8` to automatically format the code.
--   Configure the linter and formatter to use a consistent set of rules and settings.
+-   用 `pylint` 或 `flake8` 校验代码风格并发现潜在错误
+-   用 `black` 或 `autopep8` 自动格式化
+-   为 linter 与 formatter 配置一致规则
 
-### 7.4. Deployment
+### 7.4. 部署
 
--   Containerize the application using Docker.
--   Deploy the application to a cloud platform such as AWS, Azure, or Google Cloud.
--   Use a deployment tool such as Terraform or Ansible to automate the deployment process.
--   Implement a blue-green deployment strategy to minimize downtime.
+-   用 Docker 容器化应用
+-   部署到 AWS、Azure、Google Cloud 等云平台
+-   用 Terraform 或 Ansible 自动化部署
+-   采用 blue-green 部署, 最小化 downtime
 
 ### 7.5. CI/CD
 
--   Use a CI/CD tool such as GitHub Actions or GitLab CI to automate the testing, building, and deployment processes.
--   Configure the CI/CD pipeline to run tests, linters, and formatters.
--   Use a code review process to ensure code quality and security.
+-   用 GitHub Actions 或 GitLab CI 自动化测试、构建与部署
+-   CI/CD pipeline 中运行测试、linter、formatter
+-   通过 code review 保证质量与安全
 
-## Conclusion
+## 结论
 
-By following these best practices and coding standards, developers can build robust, maintainable, and scalable LangGraph applications. This will also help with collaboration amongst team members working in the same codebase.
+遵循上述最佳实践与编码规范, 可构建稳健、可维护、可扩展的 LangGraph 应用, 并便于团队成员在同一 codebase 上协作。

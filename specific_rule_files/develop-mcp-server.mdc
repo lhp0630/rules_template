@@ -1,64 +1,59 @@
 ---
-description: 
+description: MCP Server 开发指引模板
 globs: 
 alwaysApply: false
 ---
----
-description: Boilerplate Instructions to develop MCP Servers.
-globs: 
-alwaysApply: false
----
-# MCP Plugin Development Protocol
+# MCP 插件开发协议
 
-⚠️ CRITICAL: DO NOT USE attempt_completion BEFORE TESTING ⚠️
+⚠️ CRITICAL: 测试完成前 DO NOT USE attempt_completion ⚠️
 
-## Step 1: Planning (PLAN MODE)
-- What problem does this tool solve?
-- What API/service will it use?
-- What are the authentication requirements?
-  □ Standard API key
-  □ OAuth (requires separate setup script)
-  □ Other credentials
+## Step 1: 规划 (PLAN MODE)
+- 此工具解决什么问题?
+- 将使用哪个 API/服务?
+- 认证要求是什么?
+  □ 标准 API key
+  □ OAuth (需要单独的 setup 脚本)
+  □ 其他凭证
 
-## Step 2: Implementation (ACT MODE)
+## Step 2: 实现 (ACT MODE)
 1. Bootstrap
-   - For web services, JavaScript integration, or Node.js environments:
+   - Web 服务、JavaScript 集成或 Node.js 环境:
      ```bash
      npx @modelcontextprotocol/create-server my-server
      cd my-server
      npm install
      ```
-   - For data science, ML workflows, or Python environments:
+   - 数据科学、ML 工作流或 Python 环境:
      ```bash
      pip install mcp
-     # Or with uv (recommended)
+     # 或使用 uv (推荐)
      uv add "mcp[cli]"
      ```
 
-2. Core Implementation
-   - Use MCP SDK
-   - Implement comprehensive logging
-     - TypeScript (for web/JS projects):
+2. 核心实现
+   - 使用 MCP SDK
+   - 实现完整日志
+     - TypeScript (Web/JS 项目):
        ```typescript
        console.error('[Setup] Initializing server...');
        console.error('[API] Request to endpoint:', endpoint);
        console.error('[Error] Failed with:', error);
        ```
-     - Python (for data science/ML projects):
+     - Python (数据科学/ML 项目):
        ```python
        import logging
        logging.error('[Setup] Initializing server...')
        logging.error(f'[API] Request to endpoint: {endpoint}')
        logging.error(f'[Error] Failed with: {str(error)}')
        ```
-   - Add type definitions
-   - Handle errors with context
-   - Implement rate limiting if needed
+   - 添加类型定义
+   - 带上下文处理错误
+   - 必要时实现 rate limiting
 
-3. Configuration
-   - Get credentials from user if needed
-   - Add to MCP settings:
-     - For TypeScript projects:
+3. 配置
+   - 按需从用户获取凭证
+   - 添加到 MCP 设置:
+     - TypeScript 项目:
        ```json
        {
          "mcpServers": {
@@ -74,12 +69,12 @@ alwaysApply: false
          }
        }
        ```
-     - For Python projects:
+     - Python 项目:
        ```bash
-       # Directly with command line
+       # 命令行直接安装
        mcp install server.py -v API_KEY=key
        
-       # Or in settings.json
+       # 或在 settings.json 中
        {
          "mcpServers": {
            "my-server": {
@@ -95,32 +90,32 @@ alwaysApply: false
        }
        ```
 
-## Step 3: Testing (BLOCKER ⛔️)
+## Step 3: 测试 (BLOCKER ⛔️)
 
 <thinking>
-BEFORE using attempt_completion, I MUST verify:
-□ Have I tested EVERY tool?
-□ Have I confirmed success from the user for each test?
-□ Have I documented the test results?
+在使用 attempt_completion 之前, MUST 确认:
+□ 是否已测试 EVERY tool?
+□ 是否已就每项测试获得用户确认?
+□ 是否已记录测试结果?
 
-If ANY answer is "no", I MUST NOT use attempt_completion.
+若任一为「否」, MUST NOT 使用 attempt_completion。
 </thinking>
 
-1. Test Each Tool (REQUIRED)
-   □ Test each tool with valid inputs
-   □ Verify output format is correct
-   ⚠️ DO NOT PROCEED UNTIL ALL TOOLS TESTED
+1. 逐项测试 Tool (REQUIRED)
+   □ 用有效输入测试每个 tool
+   □ 验证输出格式正确
+   ⚠️ 全部 tool 测试完成前 DO NOT PROCEED
 
-## Step 4: Completion
+## Step 4: 完成
 ❗ STOP AND VERIFY:
-□ Every tool has been tested with valid inputs
-□ Output format is correct for each tool
+□ 每个 tool 均已用有效输入测试
+□ 每个 tool 的输出格式正确
 
-Only after ALL tools have been tested can attempt_completion be used.
+仅当 ALL tools 测试完成后, 方可使用 attempt_completion。
 
-## Key Requirements
-- ✓ Must use MCP SDK
-- ✓ Must have comprehensive logging
-- ✓ Must test each tool individually
-- ✓ Must handle errors gracefully
-- ⛔️ NEVER skip testing before completion
+## 关键要求
+- ✓ MUST 使用 MCP SDK
+- ✓ MUST 有完整日志
+- ✓ MUST 逐项测试每个 tool
+- ✓ MUST 优雅处理错误
+- ⛔️ NEVER 在完成前跳过测试

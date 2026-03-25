@@ -1,26 +1,22 @@
 ---
-description: 
-globs: 
+description: PyTorch 开发综合指南 (组织、性能、安全、测试)
+globs: **/*.py
 alwaysApply: false
 ---
----
-description: This rule provides comprehensive guidelines for PyTorch development, covering code organization, performance optimization, security, testing, and common pitfalls. It aims to ensure readable, maintainable, and efficient PyTorch code.
-globs: **/*.py
----
-# PyTorch Best Practices and Coding Standards
+# PyTorch 最佳实践与编码规范
 
-This document provides comprehensive guidelines for developing PyTorch projects, encompassing code organization, performance optimization, security, testing methodologies, and common pitfalls. Adhering to these best practices will result in more readable, maintainable, and efficient PyTorch code.
+本文提供 PyTorch 项目开发的综合指南, 涵盖代码组织、性能优化、安全、测试方法与常见陷阱。遵循这些实践可得到更易读、可维护、高效的 PyTorch 代码。
 
-**Library Information:**
+**库信息:**
 - Name: PyTorch
 - Category: ai_ml
 - Subcategory: machine_learning
 
-## 1. Code Organization and Structure
+## 1. 代码组织与结构
 
-### 1.1 Directory Structure Best Practices
+### 1.1 目录结构最佳实践
 
-A well-organized directory structure enhances code maintainability and collaboration. Here's a recommended structure for PyTorch projects:
+清晰的目录结构有助于维护与协作。推荐 PyTorch 项目结构如下:
 
 
 project_root/
@@ -62,52 +58,53 @@ project_root/
 └── ...
 
 
--   `data/`: Stores raw and processed datasets.
--   `models/`: Contains PyTorch model definitions, layers, and custom loss functions.  Separate network architectures, individual layers/blocks, and operations into different files.
--   `src/`: Holds the main source code, including data loading, model definitions, utility functions, and visualization tools.  It's common to split the `src/` folder further based on responsibilities.
--   `notebooks/`: Jupyter notebooks for experimentation and exploration.  Use notebooks for initial exploration and prototyping but transition finalized code to Python scripts.
--   `tests/`: Unit, integration, and end-to-end tests.
--   `scripts/`: Training, evaluation, and deployment scripts.  The main training script should import model definitions.
--   `configs/`: Configuration files for hyperparameter settings and other parameters.
+- `data/`: 存放原始与处理后数据集
+- `models/`: PyTorch 模型定义、layer 与自定义 loss; 将网络架构、layer/block 与运算分到不同文件
+- `src/`: 主源码, 含数据加载、模型定义、工具与可视化; 常按职责再分子目录
+- `notebooks/`: 用于实验与探索的 Jupyter notebook; 探索与原型可用 notebook, 定稿代码应迁到 Python 脚本
+- `tests/`: 单元、集成与 E2E 测试
+- `scripts/`: 训练、评估与部署脚本; 主训练脚本应 import 模型定义
+- `configs/`: 超参数等配置文件
 
-### 1.2 File Naming Conventions
+### 1.2 文件命名约定
 
--   Use descriptive and consistent file names.
--   Python files: `lower_with_under.py` (e.g., `data_loader.py`, `model_utils.py`).
--   Model files: `model_name.py` (e.g., `resnet.py`, `transformer.py`).
--   Configuration files: `config_name.yaml` (e.g., `train_config.yaml`).
+- 使用描述性、一致的文件名
+- Python 文件: `lower_with_under.py` (如 `data_loader.py`, `model_utils.py`)
+- 模型文件: `model_name.py` (如 `resnet.py`, `transformer.py`)
+- 配置文件: `config_name.yaml` (如 `train_config.yaml`)
 
-### 1.3 Module Organization
+### 1.3 模块组织
 
--   Group related functions and classes into modules.
--   Use clear and concise module names.
--   Include a docstring at the beginning of each module to describe its purpose.
--   Follow a consistent import style:
-    python
-    # Standard library imports
-    import os
-    import sys
+- 将相关函数与 class 归入模块
+- 模块名清晰简洁
+- 每个模块开头用 docstring 说明用途
+- 遵循一致的 import 风格:
+  ```python
+  # Standard library imports
+  import os
+  import sys
 
-    # Third-party library imports
-    import numpy as np
-    import torch
-    import torchvision
+  # Third-party library imports
+  import numpy as np
+  import torch
+  import torchvision
 
-    # Local application/library imports
-    from src.data import data_loader
-    from src.models import resnet
-    from src.utils import helper_functions
+  # Local application/library imports
+  from src.data import data_loader
+  from src.models import resnet
+  from src.utils import helper_functions
+  ```
     
 
-### 1.4 Component Architecture
+### 1.4 组件架构
 
--   **`nn.Module`:**  The fundamental building block for creating neural networks in PyTorch.  Always subclass `nn.Module` for defining models, layers, and custom operations.
--   **`forward()` method:**  Implement the forward pass of your module within the `forward()` method. PyTorch uses the `__call__` method, which executes `forward()`, to pass data through the model. 
--   **Separation of Concerns:**  Design models as compositions of smaller, reusable modules.  This promotes modularity and simplifies debugging.
+- **`nn.Module`:** PyTorch 中构建神经网络的基本单元; 定义 model、layer 与自定义运算时 MUST 继承 `nn.Module`
+- **`forward()` method:** 在 `forward()` 中实现前向传播; PyTorch 通过 `__call__` 调用 `forward()` 传递数据
+- **Separation of Concerns:** 将 model 设计为更小可复用 module 的组合, 提升模块化并简化调试
 
 Example:
 
-python
+```python
 import torch.nn as nn
 
 class ConvBlock(nn.Module):
@@ -139,248 +136,248 @@ class SimpleCNN(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.fc(x)
         return x
+```
+
+### 1.5 代码拆分策略
+
+- **Vertical Splitting (Feature-based):** 按功能拆分 (如数据加载、模型定义、训练循环), 与模块组织一致
+- **Horizontal Splitting (Layer-based):** 按网络 layer/组件拆分, 适合 encoder/decoder 等复杂结构; `models/` 目录结构支持此方式
+- **Microservices (for large projects):** 大规模部署可拆为微服务 (训练、推理、预处理等), 提升可扩展性与容错
 
+## 2. 常见模式与反模式
 
-### 1.5 Code Splitting Strategies
+### 2.1 PyTorch 特有设计模式
 
--   **Vertical Splitting (Feature-based):**  Divide code based on features or functionalities (e.g., data loading, model definition, training loop). This approach aligns well with module organization.
--   **Horizontal Splitting (Layer-based):**  Split code based on layers or components of a neural network.  This is suitable for complex models with distinct layers (e.g., encoder, decoder).  The `models/` directory structure supports this.
--   **Microservices (for large projects):** For very large and complex machine learning deployments, consider breaking the workload into microservices - one for training, one for inference, another for data preprocessing, etc.  This can improve scalability and fault tolerance.
+- **`nn.Sequential`:** 顺序串联 layer 的容器, 适合简单线性模型
+- **Custom `nn.Module`:** 封装可复用 layer/运算块, 促进模块化与复用
+- **Hooks:** 用 forward/backward hook 检查与修改训练中的 activation 与 gradient, 便于调试与研究
+- **DataParallel/DistributedDataParallel:** 用多 GPU 训练; 多节点通常优先 `DistributedDataParallel`, 性能更好
+- **Transfer Learning:** 从 `torchvision.models` 复用预训练模型, 微调或加自定义 layer
 
-## 2. Common Patterns and Anti-patterns
+### 2.2 常见任务推荐做法
 
-### 2.1 Design Patterns Specific to PyTorch
+- **Data Loading:** 用 `torch.utils.data.Dataset` 与 `DataLoader` 高效加载与 batch; 自定义 Dataset 控制变换
+- **Model Definition:** 继承 `nn.Module` 定义 model, 用 `torch.nn` 中的 layer 构建
+- **Training Loop:** 结构化训练循环, 遍历 epoch 与 batch, 含 forward、loss、backward 与优化
+- **Validation:** 训练中在验证集评估, 监控过拟合并调超参
+- **Checkpointing:** 训练中保存权重与 optimizer state, 便于恢复或加载最优模型
 
--   **`nn.Sequential`:**  A container for chaining layers in a sequential manner.  Suitable for simple, linear models.
--   **Custom `nn.Module`:**  Create custom modules for encapsulating reusable blocks of layers or operations.  This promotes modularity and code reuse.
--   **Hooks:**  Utilize forward and backward hooks for inspecting and modifying activations and gradients during training.  Useful for debugging and research.
--   **DataParallel/DistributedDataParallel:** Wrap models with `DataParallel` or `DistributedDataParallel` to leverage multiple GPUs for training. `DistributedDataParallel` is generally preferred for multi-node training and offers better performance.
--   **Transfer Learning:** Reuse pretrained models from `torchvision.models` as a starting point for new tasks. Fine-tune the pretrained weights or add custom layers.
+### 2.3 应避免的反模式与代码坏味道
 
-### 2.2 Recommended Approaches for Common Tasks
+- **Hardcoding shapes:** 避免硬编码输入/输出 shape; 用动态 shape 或根据输入计算
+- **Global Variables:** 尽量减少全局变量; 通过函数参数传递数据与配置
+- **Magic Numbers:** 避免无说明的 magic number; 用有意义的常量
+- **Deeply Nested Loops:** 优化性能关键路径; 考虑向量化或更高效数据结构, 避免不必要的嵌套循环
+- **Ignoring Warnings:** 处理所有 warning, 它们常指示潜在问题或低效; 用 debugger 与 logging 诊断运行时行为
+- **Over-commenting:** 避免重复代码的冗余注释; 重点解释 why 而非 what
+- **Not using GPU when Available:** 始终检查 cuda 是否可用, 将 tensor 与 model 移到 cuda 以加速训练与推理
 
--   **Data Loading:** Use `torch.utils.data.Dataset` and `torch.utils.data.DataLoader` for efficient data loading and batching. Use custom Datasets to control data transformation.
--   **Model Definition:** Define models as classes that inherit from `nn.Module`. Use the layers defined in `torch.nn` to build the model.
--   **Training Loop:** Implement a structured training loop that iterates over epochs and batches. Include forward pass, loss calculation, backward pass, and optimization steps.
--   **Validation:** Evaluate model performance on a validation set during training to monitor overfitting and tune hyperparameters.
--   **Checkpointing:** Save model weights and optimizer state during training to resume training or load the best model.
+### 2.4 State 管理最佳实践
 
-### 2.3 Anti-patterns and Code Smells to Avoid
+- **Model Parameters:** 由 PyTorch 自动管理; 用 `nn.Parameter` 注册为 model 参数
+- **Buffers:** 用 `nn.Buffer` 存储不可训练但属于 model state 的 tensor (如 BatchNorm 的 running stats)
+- **Optimizer State:** optimizer 维护 learning rate、momentum 等; 通过 `optimizer.state_dict()` 与 `load_state_dict()` 访问与修改
+- **Random Seeds:** 设置随机种子以保证可复现:
+  ```python
+  import numpy as np
+  import torch
 
--   **Hardcoding shapes:** Avoid hardcoding input or output shapes. Use dynamic shapes or calculate shapes based on input data.
--   **Global Variables:** Minimize the use of global variables. Pass data and configurations as function arguments.
--   **Magic Numbers:** Avoid using magic numbers without explanation. Define constants with descriptive names.
--   **Deeply Nested Loops:**  Optimize performance-critical sections of code.  Consider using vectorized operations or optimized data structures to avoid nested loops where possible.
--   **Ignoring Warnings:**  Address all warnings. They often indicate potential problems or inefficiencies in your code. Use a debugger and logging to diagnose runtime behavior.
--   **Over-commenting:**  Avoid redundant comments that simply reiterate the code. Focus on explaining the *why* rather than the *what*.
--   **Not using GPU when Available:** Always check if cuda is available and moves tensors and models to cuda for faster training and inference.
+  def set_seed(seed):
+      np.random.seed(seed)
+      torch.manual_seed(seed)
+      if torch.cuda.is_available():
+          torch.cuda.manual_seed(seed)
+          torch.cuda.manual_seed_all(seed)  # if using multiple GPUs
+          torch.backends.cudnn.deterministic = True #Ensures that CUDA uses deterministic algorithms.
+          torch.backends.cudnn.benchmark = False #Prevents CUDA from benchmarking multiple convolution algorithms. 
+  ```
 
-### 2.4 State Management Best Practices
+### 2.5 错误处理模式
 
--   **Model Parameters:** Model parameters are automatically managed by PyTorch. Use `nn.Parameter` to register tensors as model parameters.
--   **Buffers:** Use `nn.Buffer` to store non-trainable tensors that are part of the model state (e.g., running statistics in BatchNorm).
--   **Optimizer State:** The optimizer maintains its own state, such as learning rate and momentum. Access and modify optimizer state through the `optimizer.state_dict()` and `optimizer.load_state_dict()` methods.
--   **Random Seeds:** Set random seeds for reproducibility:
+- **Specific Exception Handling:** 捕获具体异常, 而非裸 `except`, 以便分场景处理
+- **Logging:** 用 `logging` 记录 error/warning, 含时间戳、文件名、行号等
+- **Assertion Statements:** 用 `assert` 检查意外条件, 尽早发现错误
+- **Custom Exceptions:** 为应用特定错误定义自定义异常 class, 提升可读性与可维护性
+- **Graceful Degradation:** 优雅降级 (默认值、跳过问题数据点等), 避免应用崩溃
 
-    python
-    import numpy as np
-    import torch
+## 3. 性能考量
 
-    def set_seed(seed):
-        np.random.seed(seed)
-        torch.manual_seed(seed)
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed(seed)
-            torch.cuda.manual_seed_all(seed)  # if using multiple GPUs
-            torch.backends.cudnn.deterministic = True #Ensures that CUDA uses deterministic algorithms.
-            torch.backends.cudnn.benchmark = False #Prevents CUDA from benchmarking multiple convolution algorithms. 
-    
+### 3.1 优化技巧
 
-### 2.5 Error Handling Patterns
+- **GPU Utilization:** 训练与推理使用 GPU; 用 `.to('cuda')` 移动 model 与 tensor
+- **Batch Size:** 调 batch size 在显存允许下最大化 GPU 利用; 更大 batch 通常性能更好
+- **Data Loading:** 在 `DataLoader` 中使用多 worker; 可考虑异步数据加载
+- **Mixed Precision Training:** 用 `torch.cuda.amp` 在支持 Tensor Core 的 NVIDIA GPU 上减显存、加速训练
+- **Gradient Accumulation:** 显存有限时在多 batch 上累积 gradient, 模拟更大 batch
+- **Operator Fusion:** 用 JIT (`torch.jit.script` 或 `torch.jit.trace`) 融合多算子, 降低开销
+- **Memory Usage:** 使用 `DataParallel` 时确保输入在各 GPU 间均匀分布, 避免显存不均拖慢训练
 
--   **Specific Exception Handling:** Catch specific exceptions rather than using bare `except` clauses. This allows you to handle different error scenarios appropriately.
--   **Logging:** Use the `logging` module to log errors and warnings. Include relevant information, such as timestamps, file names, and line numbers.
--   **Assertion Statements:** Use `assert` statements to check for unexpected conditions. This can help catch errors early in development.
--   **Custom Exceptions:** Define custom exception classes for specific error conditions in your application. This improves code readability and maintainability.
--   **Graceful Degradation:**  Implement mechanisms to handle errors gracefully, such as providing default values or skipping problematic data points.  Avoid crashing the application.
+### 3.2 内存管理
 
-## 3. Performance Considerations
+- **Tensor Deletion:** 用 `del` 删除不需要的 tensor 释放内存
+- **`torch.no_grad()`:** 推理时使用, 关闭 gradient 计算以省内存
+- **In-place Operations:** 可用 in-place 运算 (如 `x.add_(1)`) 直接修改 tensor; 注意 autograd 兼容性
+- **Memory Profiling:** 用 profiling 工具发现泄漏并优化内存
+- **Garbage Collection:** 必要时显式 `gc.collect()` 强制回收
 
-### 3.1 Optimization Techniques
+### 3.3 渲染优化 (若适用)
 
--   **GPU Utilization:** Use a GPU for training and inference. Move models and tensors to the GPU using `.to('cuda')`.
--   **Batch Size:** Tune the batch size to maximize GPU utilization without running out of memory. Larger batch sizes generally lead to better performance.
--   **Data Loading:** Optimize data loading by using multiple workers in the `DataLoader`. Consider using asynchronous data loading techniques.
--   **Mixed Precision Training:** Use mixed precision training (`torch.cuda.amp`) to reduce memory usage and accelerate training on NVIDIA GPUs with Tensor Cores.
--   **Gradient Accumulation:** Accumulate gradients over multiple batches to simulate a larger batch size when memory is limited.
--   **Operator Fusion:**  Utilize PyTorch's JIT compiler (`torch.jit.script` or `torch.jit.trace`) to fuse multiple operations into a single kernel, reducing overhead and improving performance.
--   **Memory Usage:** When using `DataParallel`, ensure that the input data is evenly distributed across the available GPUs. Uneven data distribution can result in memory imbalances and slow down training.
+- 若 PyTorch 用于渲染 (如 neural rendering):
+- **Optimize Mesh Data Structures:** 高效 mesh 结构减内存、提渲染性能
+- **Level of Detail (LOD):** 远距离降低渲染复杂度
+- **Caching:** 缓存频繁访问数据
 
-### 3.2 Memory Management
+### 3.4 Bundle 体积优化 (若适用)
 
--   **Tensor Deletion:** Delete unnecessary tensors using `del` to free up memory.
--   **`torch.no_grad()`:** Use `torch.no_grad()` during inference to disable gradient calculation and reduce memory usage.
--   **In-place Operations:** Use in-place operations (e.g., `x.add_(1)`) to modify tensors directly without creating new tensors. Be cautious with in-place operations as they can sometimes cause issues with autograd.
--   **Memory Profiling:** Use memory profiling tools to identify memory leaks and optimize memory usage.
--   **Garbage Collection:**  Explicitly call `gc.collect()` to force garbage collection.  This can be useful in situations where memory is not being released promptly.
+- 若模型部署于 Web 等对体积敏感环境:
+- **Model Quantization:** 用 `torch.quantization` 量化到 8-bit
+- **Model Pruning:** 用 `torch.nn.utils.prune` 剪枝
+- **ONNX Export:** 导出 ONNX 便于多平台部署
 
-### 3.3 Rendering Optimization (if applicable)
+### 3.5 Lazy Loading 策略
 
--   This section applies if PyTorch is used for rendering tasks (e.g., neural rendering).
--   **Optimize Mesh Data Structures:** Use efficient mesh data structures to reduce memory usage and improve rendering performance.
--   **Level of Detail (LOD):** Implement LOD techniques to reduce the complexity of rendered objects at a distance.
--   **Caching:** Cache frequently accessed data to reduce rendering time.
+- **Lazy Initialization:** 昂贵资源延后到需要时再初始化
+- **Data Streaming:** 分块加载, 避免一次性载入全量数据集
+- **Just-In-Time (JIT) Compilation:** 使用前用 `torch.jit.script` 或 `trace` 编译, 可提升性能并减内存
 
-### 3.4 Bundle Size Optimization (if applicable)
+## 4. 安全最佳实践
 
--   This section applies if PyTorch models are deployed in web applications or other size-sensitive environments.
--   **Model Quantization:** Quantize models to reduce their size. Use `torch.quantization` to quantize models to 8-bit integers.
--   **Model Pruning:** Prune unimportant weights from models to reduce their size. Use `torch.nn.utils.prune` to prune models.
--   **ONNX Export:** Convert PyTorch models to ONNX format for deployment on various platforms.
+### 4.1 常见漏洞与防护
 
-### 3.5 Lazy Loading Strategies
+- **Adversarial Attacks:** 了解对抗样本; 可采用对抗训练、输入 sanitize 等
+- **Data Poisoning:** 校验输入数据并使用稳健训练, 防止数据投毒
+- **Model Extraction:** 限制对权重与预测的访问, 防止模型被提取
+- **Integer Overflow:** 注意用户输入中的整数溢出
 
--   **Lazy Initialization:** Defer the initialization of expensive resources until they are needed.
--   **Data Streaming:** Load data in smaller chunks instead of loading the entire dataset into memory at once.
--   **Just-In-Time (JIT) Compilation:** Use `torch.jit.script` or `torch.jit.trace` to compile models just before they are used.  This can improve performance and reduce memory usage.
+### 4.2 输入校验
 
-## 4. Security Best Practices
+- **Data Type Validation:** 确保输入 dtype 正确
+- **Range Validation:** 检查数值在合法范围内
+- **Format Validation:** 校验字符串格式 (URL、邮箱等)
+- **Sanitization:**  sanitize 输入, 移除恶意字符或代码
 
-### 4.1 Common Vulnerabilities and How to Prevent Them
+### 4.3 认证与授权模式
 
--   **Adversarial Attacks:**  Be aware of adversarial attacks that can manipulate model predictions. Implement techniques like adversarial training and input sanitization.
--   **Data Poisoning:**  Protect against data poisoning attacks by validating input data and using robust training techniques.
--   **Model Extraction:**  Prevent model extraction by limiting access to model weights and predictions.
--   **Integer Overflow:** Be aware of integer overflow issues in user-provided data.
+- **API Keys:** 用 API key 认证访问模型的客户端
+- **OAuth 2.0:** 实现 OAuth 2.0 安全授权
+- **Role-Based Access Control (RBAC):** 按角色限制模型或功能访问
 
-### 4.2 Input Validation
+### 4.4 数据保护策略
 
--   **Data Type Validation:** Ensure that input data has the correct data type.
--   **Range Validation:** Check that input values are within a valid range.
--   **Format Validation:** Validate the format of input strings (e.g., URLs, email addresses).
--   **Sanitization:** Sanitize input data to remove potentially malicious characters or code.
+- **Encryption:** 静态与传输中加密敏感数据
+- **Anonymization:** 匿名化以保护隐私
+- **Differential Privacy:** 差分隐私保护训练数据
+- **Access Control:** 严格访问控制, 限制敏感数据访问
 
-### 4.3 Authentication and Authorization Patterns
+### 4.5 安全 API 通信
 
--   **API Keys:** Use API keys to authenticate clients accessing your models.
--   **OAuth 2.0:** Implement OAuth 2.0 for secure authorization of user access.
--   **Role-Based Access Control (RBAC):** Use RBAC to restrict access to specific models or functionalities based on user roles.
+- **HTTPS:** 客户端与 API 间使用 HTTPS
+- **TLS/SSL:** 用证书保护 API endpoint
+- **Rate Limiting:** 防止 DoS
+- **Input Validation:** 始终校验与 sanitize 输入, 防止注入
 
-### 4.4 Data Protection Strategies
+## 5. 测试方法
 
--   **Encryption:** Encrypt sensitive data at rest and in transit.
--   **Anonymization:** Anonymize data to protect user privacy.
--   **Differential Privacy:** Use differential privacy techniques to protect the privacy of training data.
--   **Access Control:** Implement strict access control policies to limit access to sensitive data.
+### 5.1 单元测试策略
 
-### 4.5 Secure API Communication
+- **Test Individual Modules:** 为各 module 编写单元测试
+- **Test Edge Cases:** 测试边界与极端条件
+- **Use Assertions:** 用 assertion 验证预期结果
+- **Test Model Outputs:** 验证输出 shape 与 dtype
 
--   **HTTPS:** Use HTTPS to encrypt communication between clients and your API.
--   **TLS/SSL:** Use TLS/SSL certificates to secure your API endpoints.
--   **Rate Limiting:** Implement rate limiting to prevent denial-of-service attacks.
--   **Input Validation:** Always validate and sanitize input data to prevent injection attacks.
+### 5.2 集成测试
 
-## 5. Testing Approaches
+- **Test Interactions Between Modules:** 验证 module 间协作
+- **Test Data Pipelines:** 测试从加载到输出的完整数据 pipeline
+- **Test End-to-End Functionality:** 验证整体是否满足需求
 
-### 5.1 Unit Testing Strategies
+### 5.3 端到端测试
 
--   **Test Individual Modules:** Write unit tests for individual modules to ensure they function correctly.
--   **Test Edge Cases:** Test edge cases and boundary conditions to identify potential errors.
--   **Use Assertions:** Use assertions to verify expected outcomes.
--   **Test Model Outputs:** Verify that model outputs have the correct shape and data type.
+- **Simulate User Interactions:** 模拟用户交互
+- **Test the Entire System:** 含 UI、API、数据库等
+- **Verify Expected Outcomes:** 验证预期结果
 
-### 5.2 Integration Testing
+### 5.4 测试组织
 
--   **Test Interactions Between Modules:** Write integration tests to ensure that different modules work together correctly.
--   **Test Data Pipelines:** Test the entire data pipeline, from data loading to model output.
--   **Test End-to-End Functionality:** Test the entire application to ensure that it meets the requirements.
+- **Separate Test Files:** 按 module/组件分测试文件
+- **Use a Test Runner:** 用 `pytest`、`unittest` 等发现与运行测试
+- **Follow a Consistent Naming Convention:** 测试文件与函数命名一致
 
-### 5.3 End-to-End Testing
+### 5.5 Mocking 与 Stubbing
 
--   **Simulate User Interactions:** Write end-to-end tests that simulate user interactions with the application.
--   **Test the Entire System:** Test the entire system, including the user interface, API, and database.
--   **Verify Expected Outcomes:** Verify that the application produces the expected outcomes.
+- **Use Mocks to Isolate Units:** 用 mock 隔离依赖
+- **Use Stubs to Provide Test Data:** 用 stub 提供测试数据
+- **Verify Interactions with Dependencies:** 验证与依赖的交互符合预期
 
-### 5.4 Test Organization
+## 6. 常见陷阱与注意事项
 
--   **Separate Test Files:** Create separate test files for each module or component.
--   **Use a Test Runner:** Use a test runner (e.g., `pytest`, `unittest`) to discover and run tests.
--   **Follow a Consistent Naming Convention:** Follow a consistent naming convention for test files and test functions.
+### 6.1 开发者常见错误
 
-### 5.5 Mocking and Stubbing
+- **Incorrect Tensor Shapes:** 操作时密切注意 shape; 用 `torch.Size()` 检查
+- **Gradient Issues:** 注意 gradient 流; 确保正确计算与传播; 调试用 `torch.autograd.set_detect_anomaly(True)`
+- **Memory Leaks:** 及时释放不再需要的 tensor; 用 profiling 发现泄漏
+- **Data Type Mismatches:** 确保 tensor dtype 正确 (如 `torch.float32`, `torch.int64`)
+- **Device Mismatches:** 确保 tensor 与 model 在同一 device (CPU/GPU)
 
--   **Use Mocks to Isolate Units:** Use mocks to isolate units of code from their dependencies.
--   **Use Stubs to Provide Test Data:** Use stubs to provide test data to units of code.
--   **Verify Interactions with Dependencies:** Verify that units of code interact with their dependencies as expected.
+### 6.2 需注意的边界情况
 
-## 6. Common Pitfalls and Gotchas
+- **Empty Datasets:** 处理空数据集或缺失数据
+- **Out-of-Memory Errors:** 通过减小 batch 或 gradient accumulation 优雅处理 OOM
+- **Numerical Instability:** 注意梯度消失/爆炸; 可用 gradient clipping、batch normalization 等
 
-### 6.1 Frequent Mistakes Developers Make
+### 6.3 版本相关问题
 
--   **Incorrect Tensor Shapes:** Pay close attention to tensor shapes when performing operations. Use `torch.Size()` to check tensor shapes.
--   **Gradient Issues:**  Be mindful of gradient flow.  Ensure that gradients are properly calculated and propagated through the network. Use `torch.autograd.set_detect_anomaly(True)` for debugging autograd issues.
--   **Memory Leaks:** Be careful to deallocate tensors when they are no longer needed.  Use memory profiling tools to identify memory leaks.
--   **Data Type Mismatches:** Ensure that tensors have the correct data type (e.g., `torch.float32`, `torch.int64`).
--   **Device Mismatches:** Ensure that tensors and models are on the same device (CPU or GPU).
+- **Compatibility with Libraries:** 注意 PyTorch 与其他库版本兼容
+- **API Changes:** 跟踪 PyTorch release 的 API 变更并更新代码
 
-### 6.2 Edge Cases to Be Aware Of
+### 6.4 兼容性考量
 
--   **Empty Datasets:** Handle cases where datasets are empty or contain missing data.
--   **Out-of-Memory Errors:** Handle out-of-memory errors gracefully by reducing batch size or using gradient accumulation.
--   **Numerical Instability:** Be aware of numerical instability issues, such as vanishing or exploding gradients. Use techniques like gradient clipping and batch normalization.
+- **Hardware Compatibility:** 兼容不同 GPU 等硬件
+- **Operating System Compatibility:** 兼容 Linux、Windows、macOS 等
 
-### 6.3 Version-Specific Issues
+### 6.5 调试策略
 
--   **Compatibility with Libraries:**  Be aware of compatibility issues between different versions of PyTorch and other libraries.
--   **API Changes:**  Track API changes in PyTorch releases and update your code accordingly.
+- **Print Statements:** 打印 tensor/变量值
+- **Debuggers:** 用 `pdb` 等单步调试
+- **TensorBoard:** 可视化 loss、指标与模型结构
+- **`torch.autograd.set_detect_anomaly(True)`:** 检测 NaN gradient 时抛错, 定位 autograd 问题
 
-### 6.4 Compatibility Concerns
+## 7. 工具与环境
 
--   **Hardware Compatibility:** Ensure that your code is compatible with different hardware configurations (e.g., different GPUs).
--   **Operating System Compatibility:** Ensure that your code is compatible with different operating systems (e.g., Linux, Windows, macOS).
+### 7.1 推荐开发工具
 
-### 6.5 Debugging Strategies
+- **IDEs:** VS Code (Python 扩展), PyCharm
+- **Virtual Environments:** `venv`, `conda`
+- **Debugging Tools:** `pdb`, `ipdb`
+- **Profiling Tools:** `torch.profiler`, `memory_profiler`
 
--   **Print Statements:** Use print statements to inspect the values of tensors and variables.
--   **Debuggers:** Use a debugger (e.g., `pdb`) to step through your code and inspect the state of your application.
--   **TensorBoard:** Use TensorBoard to visualize model training progress, including loss curves, metrics, and model architecture.
--   **`torch.autograd.set_detect_anomaly(True)`:**  A powerful tool for debugging autograd issues.  It will raise an error when a NaN gradient is detected, helping you pinpoint the source of the problem.
+### 7.2 构建配置
 
-## 7. Tooling and Environment
-
-### 7.1 Recommended Development Tools
-
--   **IDEs:** Visual Studio Code (with Python extension), PyCharm.
--   **Virtual Environments:** `venv`, `conda`.
--   **Debugging Tools:** `pdb`, `ipdb`.
--   **Profiling Tools:** `torch.profiler`, `memory_profiler`.
-
-### 7.2 Build Configuration
-
--   **`requirements.txt`:**  Specify project dependencies in a `requirements.txt` file. Use `pip freeze > requirements.txt` to generate the file.
+- **`requirements.txt`:** 在 `requirements.txt` 中声明依赖; 可用 `pip freeze > requirements.txt` 生成
 
     Example `requirements.txt`:
-    
+    ```
     torch==1.13.1
-torchvision==0.14.1
-numpy==1.24.1
+    torchvision==0.14.1
+    numpy==1.24.1
+    ```
     
--   **`setup.py` (for libraries):** Use `setup.py` to define your library's metadata and dependencies.
+- **`setup.py` (for libraries):** 库项目用 `setup.py` 定义元数据与依赖
 
-### 7.3 Linting and Formatting
+### 7.3 Lint 与格式化
 
--   **Linters:** `flake8`, `pylint`.
--   **Formatters:** `black`, `autopep8`.
--   **Pre-commit Hooks:** Use pre-commit hooks to automatically run linters and formatters before committing code.
+- **Linters:** `flake8`, `pylint`
+- **Formatters:** `black`, `autopep8`
+- **Pre-commit Hooks:** 提交前自动运行 linter 与 formatter
 
-### 7.4 Deployment Best Practices
+### 7.4 部署最佳实践
 
--   **Model Serialization:** Use `torch.save` to serialize models for deployment. Use `torch.load` to load models.
--   **ONNX Export:** Convert PyTorch models to ONNX format for deployment on various platforms.
--   **Serving Frameworks:** Use serving frameworks like TorchServe, FastAPI, or Flask to deploy PyTorch models as REST APIs.
+- **Model Serialization:** 用 `torch.save`/`torch.load` 序列化与加载模型
+- **ONNX Export:** 导出 ONNX 便于多平台部署
+- **Serving Frameworks:** 用 TorchServe、FastAPI、Flask 等部署 REST API
 
-### 7.5 CI/CD Integration
+### 7.5 CI/CD 集成
 
--   **Continuous Integration (CI):** Use CI tools like Jenkins, GitHub Actions, or GitLab CI to automatically build and test your code.
--   **Continuous Deployment (CD):** Use CD tools to automatically deploy your code to production environments.
--   **Automated Testing:**  Integrate automated testing into your CI/CD pipeline to ensure code quality and prevent regressions.  Run unit, integration, and end-to-end tests.
+- **Continuous Integration (CI):** 用 Jenkins、GitHub Actions、GitLab CI 自动构建与测试
+- **Continuous Deployment (CD):** 自动部署到生产
+- **Automated Testing:** 在 CI/CD 中集成单元/集成/E2E 测试, 保证质量并防止回归

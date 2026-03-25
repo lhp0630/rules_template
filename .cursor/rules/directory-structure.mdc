@@ -1,25 +1,17 @@
 ---
-description: directory structure to follow
+description: 需遵循的目录结构
 globs: 
 alwaysApply: false
 ---
----
-description: the top-level directory structure for the project
-globs: 
-alwaysApply: false
----     
-# Directory Structure
+# 目录结构
 ```mermaid
 flowchart TD
-    Root[Project Root]
+    Root[项目根目录]
     Root --> Docs[docs/]
     Root --> Tasks[tasks/]
     Root --> Cursor[.cursor/rules/]
     Root --> CLINE[.clinerules]
     Root --> SourceCode[src/]
-    Root --> Test[test/]
-    Root --> Utils[utils/]
-    Root --> Config[config/]
-    Root --> Data[data/]
-    Root --> Other[Other Directories]
+    Root --> Test[tests/]
+    Root --> Other[其他目录]
 ```

@@ -1,10 +1,5 @@
 ---
-description: captures important patterns, preferences, and project intelligence, living document that grows smarter as progress happens
+description: 记录重要模式、偏好与项目情报, 随进展不断丰富的活文档
 globs: 
 alwaysApply: false
----
----
-description: Stores important patterns, preferences, and project intelligence, living document that grows smarter as progress happens
-globs: 
-alwaysApply: true
 ---
