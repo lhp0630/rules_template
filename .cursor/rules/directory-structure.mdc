@@ -10,7 +10,7 @@ flowchart TD
     Root --> Docs[docs/]
     Root --> Tasks[tasks/]
     Root --> Cursor[.cursor/rules/]
-    Root --> CLINE[.clinerules]
+    Root --> Claude[.claude/]
     Root --> SourceCode[src/]
     Root --> Test[tests/]
     Root --> Other[其他目录]

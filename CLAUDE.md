@@ -1,0 +1,101 @@
+### 🔄 Project Awareness & Context
+- **Always read `docs/`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
+- **Check `tasks/`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
+- **Use consistent naming conventions, file structure, and architecture patterns** as described in `docs/`.
+- **Read `CONTRIBUTING.md`** before any Git operations (branch, commit, push, PR).
+
+### 🧱 Code Structure & Modularity
+- **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
+- **Organize code into clearly separated modules**, grouped by feature or responsibility.
+- **Use clear, consistent imports** (prefer relative imports within packages).
+- **Use python_dotenv and load_env()** for environment variables.
+
+### 🧪 Testing & Reliability
+- **Always create Pytest unit tests for new features** (functions, classes, routes, etc).
+- **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
+- **Tests should live in a `/tests` folder** mirroring the main app structure.
+  - Include at least:
+    - 1 test for expected use
+    - 1 edge case
+    - 1 failure case
+
+### ✅ Task Completion
+- **Mark completed tasks in `tasks/`** immediately after finishing them.
+- Add new sub-tasks or TODOs discovered during development to `tasks/` under a “Discovered During Work” section.
+
+### 📎 Style & Conventions
+- **Use Python** as the primary language.
+- **Follow PEP8**, use type hints, and format with `black`.
+- **Use `pydantic` for data validation**.
+- Use `FastAPI` for APIs and `SQLAlchemy` or `SQLModel` for ORM if applicable.
+- Write **docstrings for every function** using the Google style:
+  ```python
+  def example():
+      """
+      Brief summary.
+
+      Args:
+          param1 (type): Description.
+
+      Returns:
+          type: Description.
+      """
+  ```
+
+### 📚 Documentation & Explainability
+- **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
+- **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
+- When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
+
+### 🧠 AI Behavior Rules
+- **Never assume missing context. Ask questions if uncertain.**
+- **Never hallucinate libraries or functions** – only use known, verified Python packages.
+- **Always confirm file paths and module names** exist before referencing them in code or tests.
+- **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `tasks/`.
+
+### 🚫 Additional Rules (from AGENTS.md)
+1. **如果单次回复不足以回答问题，请将其拆分为多次回复。**
+2. **实现更改之前，请使用 PLAN 进行研究和计划并获得执行许可。**
+3. **一次许可不等于全局许可，每次执行都 MUST 获得许可。**
+4. **禁止大面积代码改动，禁止大面积入侵式代码（若是必须的，MUST 告知用户并获得许可），禁止重排，禁止 FORMAT 未变更代码块，仅改必要行。**
+5. **函数式优先原则：**
+   - 优先函数实现：除非存在明确的“状态管理”需求或需要实现特定的接口/协议，否则严禁使用 `class`（Python）或过度封装的 `struct` 方法（Go）。
+   - 无状态设计：倾向于编写纯函数（Pure Functions），输入输出明确，便于单元测试。
+   - 组合优于继承：若 MUST 使用类/结构体，优先通过组合（Composition）实现功能复用。
+6. **异步优先原则：**
+   - 优先异步实现：涉及 I/O 操作（网络请求、文件读写、数据库交互）时，MUST 优先使用异步函数（如 Python 的 `async def`）。
+   - 阻塞隔离：若 MUST 使用同步阻塞库，应显式说明或将其封装在独立的线程池/进程池中运行，避免阻塞事件循环。
+   - 并发原语：鼓励使用并发控制工具（如 `asyncio.gather` 或 Go 的 `errgroup`）并行处理独立任务。
+7. **同属职责代码应放在同一个文件里**，如以下示例：
+   ```py
+   # 该示例指导如何按职责边界组织代码，而不是按“类型”（比如“所有 model 都放 proto.py”）机械归类。
+   # 属于同一功能域、一起演进、一起被调用的代码，应放在同一个文件里，便于阅读、修改和测试。
+
+   # proto.py
+   # 公共、跨模块复用的模型
+
+   # rclone_helper.py
+   class DriverOpts(BaseModel): ...   # Rclone DriverOpts 模型, 属 Rclone 职责, 应内聚在 Rclone 模块 (文件) 
+   def build_mount_argv(): ...        # 生成 Rclone Mount CLI 命令函数
+   ```
+8. **文档与注释：**
+   - 核心逻辑 MUST 附带简洁的行内注释，优先使用英文进行注释，若规则或项目偏好要求使用指定的语言种类，则遵守规则或项目偏好。
+   - 推荐进一步调查的方向，如特定的性能瓶颈或可替代的现代库。
+9. **Git 贡献规范：**
+   - 所有 Git 操作（分支创建、Commit、Push、PR）MUST 遵守 `CONTRIBUTING.md`。
+   - 执行 Git 写操作前 MUST 完整读取 `CONTRIBUTING.md` 并对照校验。
+   - 若 `CONTRIBUTING.md` 中明确指定了 Commit 使用的语言种类，则 MUST 采用该指定的语言种类进行 Commit，当未明确指定语言种类时，则直接以 `CONTRIBUTING.md` 文件本身所编写的语言种类进行 Commit。
+10. **提出改进与进阶评估（进阶评估遵循 S1-S3）。**
+    - S1（稳定性/扩展性）：检查并发安全（如 Go 的 Mutex/Channel）及接口设计的鲁棒性。
+    - S2（性能/安全）：分析时间/空间复杂度，并识别内存泄漏或注入风险。
+    - S3（可维护性）：评估命名是否符合 Idiomatic 规范（如 Go 的简洁命名或 Python 的 PEP8），并建议模块化拆分。
+11. **禁止使用敏感数据在单元测试或示例代码，如使用 `example.com` 替代 MOCK 域名、使用 `127.0.0.1` 替代 MOCK IP。**
+
+### 🔄 Context Engineering Workflow
+- **Use PRPs (Product Requirements Prompts)** for complex features:
+  1. Create `INITIAL.md` with feature requirements
+  2. Run `/generate-prp INITIAL.md` to create comprehensive PRP
+  3. Run `/execute-prp PRPs/your-feature-name.md` to implement
+- **Leverage examples/** folder for code patterns and best practices
+- **Follow validation gates** in PRPs for self-correction
+- **Document learnings** in `lessons-learned.mdc` and `error-documentation.mdc`
