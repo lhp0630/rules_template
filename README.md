@@ -43,13 +43,29 @@ project/
 │   ├── architecture.md
 │   ├── technical.md
 │   └── product_requirement_docs.md
-├── tasks/              # Task management
+├── tasks/              # Task management (general project tasks)
 │   ├── active_context.md
-│   └── tasks_plan.md
-├── PRPs/               # Product Requirements Prompts
+│   ├── tasks_plan.md
+│   └── changelog.md
+├── PRPs/               # Product Requirements Prompts (Claude Code workflow)
+│   ├── templates/
+│   │   └── prp_base.md
+│   └── EXAMPLE_multi_agent_prp.md
 ├── examples/           # Code examples
 └── src/                # Source code
 ```
+
+### tasks/ vs PRPs/
+
+- **tasks/**: General project task management for all AI assistants
+  - `active_context.md`: Current development context and focus
+  - `tasks_plan.md`: Task backlog and project progress
+  - `changelog.md`: Change history and documentation
+
+- **PRPs/**: Claude Code-specific Product Requirements Prompts
+  - `templates/prp_base.md`: PRP template with validation loops
+  - `EXAMPLE_multi_agent_prp.md`: Complete PRP example
+  - Used with `/generate-prp` and `/execute-prp` commands
 
 ## Rule Files
 

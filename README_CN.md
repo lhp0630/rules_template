@@ -43,13 +43,29 @@ project/
 │   ├── architecture.md
 │   ├── technical.md
 │   └── product_requirement_docs.md
-├── tasks/              # 任务管理
+├── tasks/              # 任务管理（通用项目任务）
 │   ├── active_context.md
-│   └── tasks_plan.md
-├── PRPs/               # 产品需求提示
+│   ├── tasks_plan.md
+│   └── changelog.md
+├── PRPs/               # 产品需求提示（Claude Code 工作流）
+│   ├── templates/
+│   │   └── prp_base.md
+│   └── EXAMPLE_multi_agent_prp.md
 ├── examples/           # 代码示例
 └── src/                # 源代码
 ```
+
+### tasks/ 与 PRPs/ 的区别
+
+- **tasks/**: 适用于所有AI助手的通用项目任务管理
+  - `active_context.md`: 当前开发上下文和焦点
+  - `tasks_plan.md`: 任务积压和项目进度
+  - `changelog.md`: 变更历史和文档
+
+- **PRPs/**: Claude Code专用的产品需求提示
+  - `templates/prp_base.md`: 带验证循环的PRP模板
+  - `EXAMPLE_multi_agent_prp.md`: 完整的PRP示例
+  - 与 `/generate-prp` 和 `/execute-prp` 命令配合使用
 
 ## 规则文件
 
