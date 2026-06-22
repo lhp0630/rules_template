@@ -5,10 +5,10 @@ description: |
 Build a Pydantic AI multi-agent system where a primary Research Agent uses Brave Search API and has an Email Draft Agent (using Gmail API) as a tool. This demonstrates agent-as-tool pattern with external API integrations.
 
 ## Core Principles
-1. **Context is King**: Include ALL necessary documentation, examples, and caveats
-2. **Validation Loops**: Provide executable tests/lints the AI can run and fix
-3. **Information Dense**: Use keywords and patterns from the codebase
-4. **Progressive Success**: Start simple, validate, then enhance
+1. Context is King: Include ALL necessary documentation, examples, and caveats
+2. Validation Loops: Provide executable tests/lints the AI can run and fix
+3. Information Dense: Use keywords and patterns from the codebase
+4. Progressive Success: Start simple, validate, then enhance
 
 ---
 
@@ -16,9 +16,9 @@ Build a Pydantic AI multi-agent system where a primary Research Agent uses Brave
 Create a production-ready multi-agent system where users can research topics via CLI, and the Research Agent can delegate email drafting tasks to an Email Draft Agent. The system should support multiple LLM providers and handle API authentication securely.
 
 ## Why
-- **Business value**: Automates research and email drafting workflows
-- **Integration**: Demonstrates advanced Pydantic AI multi-agent patterns
-- **Problems solved**: Reduces manual work for research-based email communications
+- Business value: Automates research and email drafting workflows
+- Integration: Demonstrates advanced Pydantic AI multi-agent patterns
+- Problems solved: Reduces manual work for research-based email communications
 
 ## What
 A CLI-based application where:

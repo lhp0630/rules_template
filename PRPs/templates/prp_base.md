@@ -5,11 +5,11 @@ description: |
 Template optimized for AI agents to implement features with sufficient context and self-validation capabilities to achieve working code through iterative refinement.
 
 ## Core Principles
-1. **Context is King**: Include ALL necessary documentation, examples, and caveats
-2. **Validation Loops**: Provide executable tests/lints the AI can run and fix
-3. **Information Dense**: Use keywords and patterns from the codebase
-4. **Progressive Success**: Start simple, validate, then enhance
-5. **Global rules**: Be sure to follow all rules in CLAUDE.md
+1. Context is King: Include ALL necessary documentation, examples, and caveats
+2. Validation Loops: Provide executable tests/lints the AI can run and fix
+3. Information Dense: Use keywords and patterns from the codebase
+4. Progressive Success: Start simple, validate, then enhance
+5. Global rules: Be sure to follow all rules in CLAUDE.md
 
 ---
 

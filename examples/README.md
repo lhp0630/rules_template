@@ -21,15 +21,15 @@ examples/
 
 These examples serve as reference patterns for:
 
-1. **Agent Creation** - How to create and configure AI agents
-2. **Tool Implementation** - How to add tools to agents
-3. **CLI Structure** - How to build command-line interfaces
-4. **Testing Patterns** - How to write unit tests
-5. **Provider Configuration** - How to handle multiple LLM providers
+1. Agent Creation - How to create and configure AI agents
+2. Tool Implementation - How to add tools to agents
+3. CLI Structure - How to build command-line interfaces
+4. Testing Patterns - How to write unit tests
+5. Provider Configuration - How to handle multiple LLM providers
 
 ## Guidelines
 
-- Use these as **reference patterns**, not direct copies
+- Use these as reference patterns, not direct copies
 - Follow the coding style and conventions shown
 - Adapt patterns to your specific use case
 - Reference these in your `INITIAL.md` when creating PRPs

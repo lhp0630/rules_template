@@ -1,6 +1,6 @@
 # AI Rules Template
 
-A comprehensive rules template for AI coding assistants, supporting **Cursor AI** and **Claude Code** with Context Engineering.
+A comprehensive rules template for AI coding assistants, supporting Cursor AI and Claude Code with Context Engineering.
 
 ## Overview
 
@@ -8,11 +8,11 @@ This template provides a structured framework for AI-assisted development based 
 
 ## Features
 
-- **Cursor AI Support**: `.cursor/rules/` directory with `.mdc` files for on-demand loading
-- **Claude Code Support**: Context Engineering workflow with PRP (Product Requirements Prompts)
-- **Memory Bank**: Persistent documentation system in `docs/` and `tasks/`
-- **Agile Workflow**: Built on software engineering principles and best practices
-- **Auto-Documentation**: Automatically updates documentation after changes
+- Cursor AI Support: `.cursor/rules/` directory with `.mdc` files for on-demand loading
+- Claude Code Support: Context Engineering workflow with PRP (Product Requirements Prompts)
+- Memory Bank: Persistent documentation system in `docs/` and `tasks/`
+- Agile Workflow: Built on software engineering principles and best practices
+- Auto-Documentation: Automatically updates documentation after changes
 
 ## Quick Start
 
@@ -57,12 +57,12 @@ project/
 
 ### tasks/ vs PRPs/
 
-- **tasks/**: General project task management for all AI assistants
+- tasks/: General project task management for all AI assistants
   - `active_context.md`: Current development context and focus
   - `tasks_plan.md`: Task backlog and project progress
   - `changelog.md`: Change history and documentation
 
-- **PRPs/**: Claude Code-specific Product Requirements Prompts
+- PRPs/: Claude Code-specific Product Requirements Prompts
   - `templates/prp_base.md`: PRP template with validation loops
   - `EXAMPLE_multi_agent_prp.md`: Complete PRP example
   - Used with `/generate-prp` and `/execute-prp` commands
@@ -85,10 +85,10 @@ project/
 
 `MEMORY.md` provides a comprehensive documentation system for persistent project memory:
 
-- **Core Files** (required): Product requirements, architecture, technical specs, task plans, active context, error documentation, lessons learned
-- **Context Files** (optional): Literature surveys, RFCs
-- **Workflow**: PLAN/ACT modes for reading and writing memory files
-- **Auto-Updates**: Documentation automatically updated after changes
+- Core Files (required): Product requirements, architecture, technical specs, task plans, active context, error documentation, lessons learned
+- Context Files (optional): Literature surveys, RFCs
+- Workflow: PLAN/ACT modes for reading and writing memory files
+- Auto-Updates: Documentation automatically updated after changes
 
 ### Claude Code
 
@@ -102,10 +102,10 @@ project/
 
 ## Core Principles
 
-1. **Context Engineering**: Provide comprehensive context for AI assistants
-2. **Validation Loops**: Self-correcting workflows with executable tests
-3. **Documentation-Driven**: Persistent memory through structured documentation
-4. **Modular Design**: Separation of concerns and incremental development
+1. Context Engineering: Provide comprehensive context for AI assistants
+2. Validation Loops: Self-correcting workflows with executable tests
+3. Documentation-Driven: Persistent memory through structured documentation
+4. Modular Design: Separation of concerns and incremental development
 
 ## Contributing
 
