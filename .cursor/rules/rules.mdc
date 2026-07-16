@@ -3,4 +3,4 @@ description: 核心规则
 alwaysApply: true
 ---
 
-使用uv来安装依赖。代码提交前运行`uv run ruff format .`,`uv run ruff check .`。创建或更新涵盖受影响代码路径的测试，并使用`uv run pytest`。创建PR时，在PR描述中添加面向用户的使用示例，保持PR描述的最新变化。检查pyproject.toml若依赖pydantic时则优先使用BaseModel而非dict或dataclass。使用`python_dotenv`和`load_env()`处理环境变量。保持diff纯度，保持可审的变更规模。若非重构时，设计应优先边缘接入，而非入侵核心。始终先PLAN，在许可后实现。
+使用uv来安装依赖。代码提交前运行`uv run ruff format .`,`uv run ruff check .`。创建或更新涵盖受影响代码路径的测试，并使用`uv run pytest`。创建PR时，在PR描述中添加面向用户的使用示例，保持PR描述的最新变化。检查pyproject.toml若依赖pydantic时则优先使用BaseModel而非dict或dataclass。使用`python_dotenv`和`load_env()`处理环境变量。保持Diff纯度，只修改与该任务直接相关的行，严禁顺手重构、提取常量或修改任何未涉及的邻近代码，始终提交极简、极易被Code Review的Diff。当发现与修改范围无关的缺陷、或与当前任务无关时，禁止修改，将缺陷告知且说明原因。若非重构时，设计应优先边缘接入，而非入侵核心。
